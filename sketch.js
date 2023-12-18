@@ -10,6 +10,8 @@ var obstaclesGroup, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5, obsta
 
 var score;
 
+var gameOverImg, restartImg
+var jumpSound, checkPointSound, dieSound
 
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
@@ -25,12 +27,18 @@ function preload(){
   obstacle4 = loadImage("obstacle4.png");
   obstacle5 = loadImage("obstacle5.png");
   obstacle6 = loadImage("obstacle6.png");
-  
+
+  restartImg = loadImage("restart.png");
+  gameOverImg = loadImage("gameOver.png")
+
+  jumpSound = loadSound("jump.mp3")
+  dieSound - loadSound("die.mp3")
+  checkPointSound = loadSound("checkPoint.mp3")
 }
 
 function setup() {
   createCanvas(600, 200);
-  
+
   trex = createSprite(50,180,20,50);
   trex.addAnimation("running", trex_running);
   trex.addAnimation("collided" , trex_collided)
@@ -39,7 +47,15 @@ function setup() {
   ground = createSprite(200,180,400,20);
   ground.addImage("ground",groundImage);
   ground.x = ground.width /2;
-  
+
+  gameOver = createSprite(300,100);
+gameOver.addImage(gameOverImg);
+
+  restart = createSprite(300,140);
+  restart.addImage(restartImg);
+
+  gameOver.scale = 0.5;
+  restart.scale = 0.5;
   
   invisibleGround = createSprite(200,190,400,10);
   invisibleGround.visible = false;
@@ -93,8 +109,20 @@ function draw() {
     }
   }
    else if (gameState === END) {
-      ground.velocityX = 0;
+     console.log("hey")
+     gameOver.visible = true;
+     restart.visible = true;
      
+     ground.velocityX = 0;
+     trex.velocityY = 0
+     
+     //change the trex animation
+     trex.changeAnimation("collided", trex_collided);
+     
+     //set lifetime of the game objects so that they never are destroyed
+     obstaclesGroup.setLifetimeEach(-1);
+      cloudsGroup.setLifetimeEach(-1);
+    
      obstaclesGroup.setVelocityXEach(0);
      cloudsGroup.setVelocityXEach(0);
    }
